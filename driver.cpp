@@ -37,7 +37,7 @@ int main(){
         }
         
         while(true){
-            cout << "What do you want to do now?: \n(1) Print out the tree.\n(2) Add number(s).\n(3) Add numbers from a file. \n(4) Start a new tree.\n(q) Quit program.\n(9) Sleep for 9 hours." << endl;
+            cout << "What do you want to do now?: \n(1) Print out the tree.\n(2) Add number(s).\n(3) Add numbers from a file. \n(4) Start a new tree.\n(5) Check if a number is in the tree.\n(6) Remove a number from the tree.\n(q) Quit program.\n(9) Sleep for 9 hours." << endl;
             cin >> input;
             if(input == '1'){
                 cout << "Tree:" << endl;
@@ -51,6 +51,28 @@ int main(){
             }
             else if (input == '4' || input == 'q'){
                 break;
+            }
+            else if(input == '5'){
+                int num;
+                cout << "Enter your number: ";
+                cin >> num;
+                if(redBlackTree.isInTree(num)){
+                    cout << "Your number is present in the tree." << endl;
+                }
+                else{
+                    cout << "Your number was not found in the tree." << endl;
+                }
+            }
+            else if(input == '6'){
+                int num;
+                cout << "Enter the number to remove: ";
+                cin >> num;
+                if(redBlackTree.remove(num)){
+                    cout << "Number removed successfully." << endl;
+                }
+                else{
+                    cout << "Number not found in the tree." << endl;
+                }
             }
             else if (input == '9'){
                 cout << "Access denied by the International Baccalaureate Programme. Your attempt has been logged." << endl;

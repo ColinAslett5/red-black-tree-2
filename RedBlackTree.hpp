@@ -32,6 +32,13 @@ struct Node{
   void paintRed(){
     black = false;
   }
+  void makeSentinel(){
+    deleteSubtrees();
+    left = 0;
+    right = 0;
+    paintBlack();
+    value = 0;
+  }
   void addSentinelLeafs(){
     setLeft(new Node());
     setRight(new Node());
@@ -83,6 +90,7 @@ class RedBlackTree{
     RedBlackTree();
     ~RedBlackTree();
     void insert(int num);
+    bool isInTree(int num);
     bool remove(int num);
     bool isEmpty();
     void print();
@@ -92,7 +100,7 @@ class RedBlackTree{
     void preserveTreeProperties(Node * inserted);
     int getNumLevels(Node* root, int level);
     void populateArray(int *& array, int index, Node* node);
-    //Node** find(Node *& node, int num);
+    Node* find(Node * node, int num);
     void removeSingleNode(Node* toRemove);
     void leftRotation(Node* formerChild);
     void rightRotation(Node* formerChild);

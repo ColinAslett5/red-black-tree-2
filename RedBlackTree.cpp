@@ -69,11 +69,11 @@ bool RedBlackTree::remove(int num){
     if(toRemove == 0){//Node not found
         return false;
     }
-    if(!toRemove->left.isSentinel() && !toRemove->right.isSentinel()){
+    if(!toRemove->left->isSentinel() && !toRemove->right->isSentinel()){
         //If the node has two non-leaf children, copy its successor's value
         //onto it, then remove the successor.
         Node* successor = toRemove->right;
-        while(!successor->left.isSentinel()){
+        while(!successor->left->isSentinel()){
             successor = successor->left;
         }
         toRemove->value = successor->value;
@@ -85,7 +85,10 @@ bool RedBlackTree::remove(int num){
 
 void RedBlackTree::removeSingleNode(Node* toRemove){
     //Removal of a node that has at most one non-sentinel child.
-    
+    if(toRemove->isRed()){
+        //Can only occur if toRemove has two leaf nodes.
+        toRemove->makeSentinel();
+    }
 }
 
 void RedBlackTree::print(){
@@ -159,18 +162,22 @@ void RedBlackTree::populateArray(int *& array, int index, Node* node){
 
 Node* RedBlackTree::find(Node * currentRoot, int num){
     //Returns pointer to the first node with value == num.
-    if(currentRoot.isSentinel()){//Return null if no such node
+    if(currentRoot->isSentinel()){//Return null if no such node
         return 0;
     }
     if(currentRoot->value == num){
         return currentRoot;
     }
     else if(num > currentRoot->value){
-        return find(node->right, num);
+        return find(currentRoot->right, num);
     }
     else{
-        return find(node->left, num);
+        return find(currentRoot->left, num);
     }
+}
+
+bool RedBlackTree::isInTree(int num){
+    return find(root, num) != 0;
 }
 
 void RedBlackTree::leftRotation(Node* formerChild){
