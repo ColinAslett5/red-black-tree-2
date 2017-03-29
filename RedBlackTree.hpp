@@ -65,6 +65,18 @@ struct Node{
       node->parent = this;
     }
   }
+  Node** nonSentinelChild(){
+    //Return a pointer to the pointer of this to its non-sentinel child if there is one,
+    //a sentinel child if both are sentinel.
+    Node** ptr;
+    if(left->isSentinel()){
+      ptr = &right;
+    }
+    else{
+      ptr = &left;
+    }
+    return ptr;
+  }
   bool isLeftChild(){
     //Parent shouldn't be null if calling this.
     return parent->left == this;

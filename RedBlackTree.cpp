@@ -88,6 +88,16 @@ void RedBlackTree::removeSingleNode(Node* toRemove){
     if(toRemove->isRed()){
         //Can only occur if toRemove has two leaf nodes.
         toRemove->makeSentinel();
+        return;
+    }
+    Node** child = toRemove->nonSentinelChild();
+    if((*child)->isRed()){
+        (*parentPtrTo(toRemove)) = (*child);
+        (*child)->parent = toRemove->parent;
+        (*child)->paintBlack();
+        (*child) = 0;
+        toRemove->deleteSubtrees();
+        delete toRemove;
     }
 }
 
