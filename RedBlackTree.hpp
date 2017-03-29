@@ -1,4 +1,5 @@
 //Red-black tree that supports insertion and printing out a visual of the tree.
+//It now also supports removal.
 #include <iostream>
 #pragma once
 

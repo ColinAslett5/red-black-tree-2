@@ -1,6 +1,8 @@
 /*
  * A program that places numbers (entered by the user or from a file)
  * into a red-black tree. You can print out the tree.
+ * The user can now also remove numbers from the tree or just check
+ * if a certain number is in the tree.
  * Artur Drobot, Mar 2017.
  */
 #include <iostream>
