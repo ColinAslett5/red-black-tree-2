@@ -54,6 +54,12 @@ struct Node{
     }
     return gp->left == parent ? gp->right : gp->left;
   }
+  Node* sibling(){
+    if(parent == 0){
+      return 0;
+    }
+    return parent->left == this ? parent->right : parent->left;
+  }
   void setLeft(Node* node){
     left = node;
     if(node!=0){
@@ -66,17 +72,10 @@ struct Node{
       node->parent = this;
     }
   }
-  Node** nonSentinelChild(){
-    //Return a pointer to the pointer of this to its non-sentinel child if there is one,
+  Node* nonSentinelChild(){
+    //Return a pointer to a non-sentinel child if there is one,
     //a sentinel child if both are sentinel.
-    Node** ptr;
-    if(left->isSentinel()){
-      ptr = &right;
-    }
-    else{
-      ptr = &left;
-    }
-    return ptr;
+    return left->isSentinel() ? right : left;
   }
   bool isLeftChild(){
     //Parent shouldn't be null if calling this.
@@ -118,4 +117,6 @@ class RedBlackTree{
     void leftRotation(Node* formerChild);
     void rightRotation(Node* formerChild);
     Node** parentPtrTo(Node* child);
+    void replaceParentOf(Node* child);
+    void rebalance(Node* node);
 };

@@ -90,14 +90,72 @@ void RedBlackTree::removeSingleNode(Node* toRemove){
         toRemove->makeSentinel();
         return;
     }
-    Node** child = toRemove->nonSentinelChild();
-    if((*child)->isRed()){
-        (*parentPtrTo(toRemove)) = (*child);
-        (*child)->parent = toRemove->parent;
-        (*child)->paintBlack();
-        (*child) = 0;
-        toRemove->deleteSubtrees();
-        delete toRemove;
+    Node* child = toRemove->nonSentinelChild();
+    if(child->isRed()){//toRemove black, child red.
+        replaceParentOf(child);
+        child->paintBlack();
+        return;
+    }
+    //Here toRemove is black with two leaves.
+    toRemove->makeSentinel();
+    rebalance(toRemove);
+}
+
+void RedBlackTree::rebalance(Node* node){
+    //Called when node (black) replaced its (former) black parent in removal.
+    if(node->parent == 0){//node is the root
+        return;
+    }
+    Node* sibling = node->sibling();
+    if(sibling->isRed()){//Then node's parent is black
+        //Reverse colors of parent and sibling.
+        node->parent->paintRed();
+        sibling->paintBlack();
+        //Rotate sibling into parent's place.
+        if(node->isLeftChild()){
+            leftRotation(sibling);
+        }
+        else{
+            rightRotation(sibling);
+        }
+        //Do not return.
+    }
+    sibling = node->sibling();
+    if(node->parent->black && sibling->black && sibling->left->black && sibling->right->black){
+        sibling->paintRed();
+        rebalance(node->parent);
+        return;
+    }
+    if(node->parent->isRed() && sibling->black/*redundant?!?!*/ && sibling->left->black && sibling->right->black){
+        sibling->paintRed();
+        node->parent->paintBlack();
+        return;
+    }
+    //sibling must be black.
+    if(node->isLeftChild() && sibling->right->black){//Then sibling->left is red since sibling's both children aren't black
+        //Exchange colors of sibling and its left child, then rotate right through sibling.
+        sibling->left->paintBlack();
+        sibling->paintRed();
+        rightRotation(sibling->left);
+        //Do not return.
+    }
+    else if(node->isRightChild() && sibling->left->black){//Then similarly, sibling->right is red.
+        sibling->right->paintBlack();
+        sibling->paintRed();
+        leftRotation(sibling->right);
+        //Do not return.
+    }
+    sibling = node->sibling();
+    //Exchange colors of sibling and parent (parent can be either color but sibling is black):
+    sibling->black = node->parent->black;
+    node->parent->paintBlack();
+    if(node->isLeftChild()){//Then sibling->right is red
+        sibling->right->paintBlack();
+        leftRotation(sibling);
+    }
+    else{//node is right child and sibling->left is red
+        sibling->left->paintBlack();
+        rightRotation(sibling);
     }
 }
 
@@ -218,4 +276,15 @@ Node** RedBlackTree::parentPtrTo(Node* child){
         ptr = &(child->parent->right);
     }
     return ptr;
+}
+
+void RedBlackTree::replaceParentOf(Node* child){
+    //Replace parent of child with child
+    Node* parent = child->parent;
+    Node** childPtr = parentPtrTo(child);
+    child->parent = child->grandparent();
+    (*parentPtrTo(parent)) = child;
+    *childPtr = 0;
+    parent->deleteSubtrees();
+    delete parent;
 }
